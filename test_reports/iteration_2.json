@@ -1,0 +1,62 @@
+{
+  "summary": "Completed comprehensive testing of KaalChakra V2 multilingual features. All 25 backend API tests passed (100% success rate). All frontend V2 features tested and working: language switcher (EN/HI/MR), Then vs Now image comparison slider, multilingual fort content (Devanagari), quiz in Hindi, Ask the King in Marathi, leaderboard translations, and mobile responsive language switcher. V1 regression tests passed - all existing features still work correctly.",
+  "backend_issues": {
+    "critical_bugs": [],
+    "flaky_endpoints": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Backend V1: All 14 V1 tests passed (forts, quiz, leaderboard, chat)",
+    "Backend V2: GET /api/forts?lang=hi returns Hindi (Devanagari) content",
+    "Backend V2: GET /api/forts?lang=mr returns Marathi (Devanagari) content",
+    "Backend V2: GET /api/forts/{slug}?lang=hi returns Hindi fort with translated narration and timeline",
+    "Backend V2: GET /api/forts/{slug} includes then_image_url (/reconstructions/{slug}.jpg) and now_image_url",
+    "Backend V2: GET /reconstructions/{slug}.jpg serves all 6 reconstruction images (200 OK, image content-type)",
+    "Backend V2: GET /api/forts/{slug}/quiz?lang=mr returns Marathi quiz (correct_index still hidden)",
+    "Backend V2: GET /api/quiz/general?lang=hi returns Hindi quiz",
+    "Backend V2: POST /api/quiz/submit with lang=hi returns Hindi explanation in details",
+    "Backend V2: POST /api/chat/stream with lang=mr streams Marathi response",
+    "Backend V2: POST /api/chat/stream with lang=en still works",
+    "Backend V2: GET /api/forts?lang=invalid falls back to English gracefully",
+    "Frontend V2: Language switcher button opens dropdown with EN/HI/MR options",
+    "Frontend V2: Switching to Hindi changes UI to Devanagari (nav, buttons, labels)",
+    "Frontend V2: Fort cards in Explore show Hindi content after language switch",
+    "Frontend V2: Fort Detail page shows Hindi content (description, quick facts, timeline, narration)",
+    "Frontend V2: Then vs Now tab renders BeforeAfterSlider component with reconstruction (Then) and present-day (Now) images",
+    "Frontend V2: Range slider control (data-testid=before-after-range) moves divider correctly (tested 25% and 75%)",
+    "Frontend V2: Switching to Marathi changes content to Marathi (Devanagari)",
+    "Frontend V2: Narration controls present and clickable (Play button text changes to Marathi)",
+    "Frontend V2: Narration captions display in selected language (Marathi tested)",
+    "Frontend V2: Language persists across navigation (Hindi → Explore → Fort Detail maintains Hindi)",
+    "Frontend V2: Quiz page in Hindi shows translated UI (title, buttons, name entry dialog)",
+    "Frontend V2: Quiz name entry dialog in Hindi ('हम आपको किस नाम से पुकारें?')",
+    "Frontend V2: Quiz questions render in Hindi (Devanagari)",
+    "Frontend V2: Ask the King page in Marathi shows translated UI and quick prompts",
+    "Frontend V2: Ask the King quick prompts in Marathi (4 prompts tested)",
+    "Frontend V2: Leaderboard in Hindi shows translated table headers (रैंक, खिलाड़ी, क्विज़, स्कोर, बैज)",
+    "Frontend V2: Leaderboard badge labels translated (स्वर्ण=Gold, रजत=Silver, कांस्य=Bronze, सीखते रहें=Keep Learning)",
+    "Frontend V2: Mobile responsive (390x844) - language switcher accessible and works",
+    "Regression: Home page features section still works in English",
+    "Regression: Fort Detail 3D model-viewer renders correctly",
+    "Regression: Fort Detail tabs (About/Timeline/Then vs Now) switch correctly",
+    "Regression: Navigation between pages works (Home, Explore, Quiz, Leaderboard, Ask the King)"
+  ],
+  "test_report_links": [
+    "/app/backend_test.py",
+    "/app/backend_test_v2.log"
+  ],
+  "success_percentage": {
+    "backend": "100% (25/25 tests passed - 14 V1 + 11 V2)",
+    "frontend": "100% (all V2 features working + V1 regression passed)"
+  },
+  "action_item_for_main_agent": "",
+  "updated_files": [
+    "/app/backend_test.py"
+  ],
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_test_itself": false
+}

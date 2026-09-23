@@ -1,0 +1,38 @@
+{
+  "shivneri": [
+    "/forts/shivneri.jpg",
+    "/forts/shivneri-2.jpg",
+    "/forts/shivneri-3.jpg",
+    "/forts/shivneri-4.jpg"
+  ],
+  "torna": [
+    "/forts/torna.jpg",
+    "/forts/torna-2.jpg",
+    "/forts/torna-3.jpg",
+    "/forts/torna-4.jpg"
+  ],
+  "rajgad": [
+    "/forts/rajgad.jpg",
+    "/forts/rajgad-2.jpg",
+    "/forts/rajgad-3.jpg",
+    "/forts/rajgad-4.jpg"
+  ],
+  "pratapgad": [
+    "/forts/pratapgad.jpg",
+    "/forts/pratapgad-2.jpg",
+    "/forts/pratapgad-3.jpg",
+    "/forts/pratapgad-4.jpg"
+  ],
+  "sinhagad": [
+    "/forts/sinhagad.jpg",
+    "/forts/sinhagad-2.jpg",
+    "/forts/sinhagad-3.jpg",
+    "/forts/sinhagad-4.jpg"
+  ],
+  "raigad": [
+    "/forts/raigad.jpg",
+    "/forts/raigad-2.jpg",
+    "/forts/raigad-3.jpg",
+    "/forts/raigad-4.jpg"
+  ]
+}

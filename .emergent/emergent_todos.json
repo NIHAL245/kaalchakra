@@ -1,0 +1,50 @@
+[
+  {
+    "content": "Backend: Add admin JWT auth (login, me, require_admin dependency) + seed default admin account",
+    "status": "completed"
+  },
+  {
+    "content": "Backend: Admin Forts CRUD endpoints (GET/POST/PUT/DELETE)",
+    "status": "completed"
+  },
+  {
+    "content": "Backend: Admin Quiz CRUD endpoints (GET/POST/PUT/DELETE)",
+    "status": "completed"
+  },
+  {
+    "content": "Backend: Admin Leaderboard (list, delete one, clear all) + Analytics endpoint",
+    "status": "completed"
+  },
+  {
+    "content": "Frontend: Map Detail Cards - Leaflet popup card in FortMap.jsx + CSS overrides",
+    "status": "completed"
+  },
+  {
+    "content": "Frontend: adminApi.js client + /admin route wiring (outside AppShell)",
+    "status": "completed"
+  },
+  {
+    "content": "Frontend: Admin login screen + AdminShell (top bar + tabs)",
+    "status": "completed"
+  },
+  {
+    "content": "Frontend: AdminForts manager (table + create/edit dialog + delete)",
+    "status": "completed"
+  },
+  {
+    "content": "Frontend: AdminQuizzes manager (table + create/edit dialog + delete)",
+    "status": "completed"
+  },
+  {
+    "content": "Frontend: AdminLeaderboard manager + AdminAnalytics overview",
+    "status": "completed"
+  },
+  {
+    "content": "Testing: backend admin endpoints (testing agent) + fix bugs",
+    "status": "completed"
+  },
+  {
+    "content": "Testing: frontend map popup + admin flows (testing agent) + screenshots",
+    "status": "completed"
+  }
+]
