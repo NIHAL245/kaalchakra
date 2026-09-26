@@ -1,0 +1,16 @@
+/* KaalChakra global app styles. Do NOT center the app container. */
+.App {
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+/* Shimmer used by skeleton loaders */
+@keyframes kc-shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
