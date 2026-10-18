@@ -155,7 +155,7 @@
     }
 }
 
-/* model-viewer stage sizing + AR button reset */
+/* Responsive model-viewer stage */
 model-viewer {
     width: 100%;
     height: 100%;

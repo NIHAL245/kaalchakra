@@ -62,15 +62,19 @@ MUSEUM_TX = _load_json("museum_translations.json", {"items": {}, "categories": {
 MUSEUM_SEED_VERSION = 2
 MUSEUM_CAT_SLUGS = {c["slug"] for c in MUSEUM_CATEGORIES}
 
-# Representative CC0 fort/castle 3D models (Quaternius / get3dmodels, public domain).
-# Swap with real fort .glb scans when available.
+# Supplied fort-specific 3D models.  Keep this mapping as the single source of
+# truth so API clients and the Admin panel use stable, URL-safe asset paths.
 MODEL_BY_SLUG = {
-    "shivneri": "/models/fort-keep.glb",
-    "torna": "/models/fort-stone2.glb",
-    "rajgad": "/models/fort-castle.glb",
-    "pratapgad": "/models/fort-fortress.glb",
-    "sinhagad": "/models/fort-stone2.glb",
-    "raigad": "/models/fort-fantasy.glb",
+    "lohagad": "/models/forts/lohagad.glb",
+    "murud-janjira": "/models/forts/murud-janjira.glb",
+    "panhala": "/models/forts/panhala.glb",
+    "pratapgad": "/models/forts/pratapgad.glb",
+    "purandar": "/models/forts/purandar.glb",
+    "raigad": "/models/forts/raigad.glb",
+    "rajgad": "/models/forts/rajgad.glb",
+    "shivneri": "/models/forts/shivneri.glb",
+    "sindhudurg": "/models/forts/sindhudurg.glb",
+    "torna": "/models/forts/torna.glb",
 }
 
 # ----- LLM (Ask the King) configuration -----
@@ -476,6 +480,11 @@ async def seed_database(force: bool = False):
             {"_id": "seed"}, {"$set": {"version": SEED_VERSION}}, upsert=True
         )
         logger.info(f"Seeded {len(fort_docs)} forts, {len(quiz_docs)} quiz questions (v{SEED_VERSION})")
+
+    # Model URLs are application assets, not editable historical content. Update
+    # these known matches on every startup without deleting Admin-created data.
+    for slug, model_url in MODEL_BY_SLUG.items():
+        await db.forts.update_one({"slug": slug}, {"$set": {"model_url": model_url}})
 
 
 async def seed_museum(force: bool = False):

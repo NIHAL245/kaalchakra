@@ -4,7 +4,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowUpRight, CircleDollarSign, Crown, Gem, Landmark, Shield, Sparkles } from "lucide-react";
 import { getMuseumCategories, getMuseumItem, getMuseumItems } from "@/lib/api";
 import { useLanguage } from "@/context/LanguageContext";
-import { ModelViewer } from "@/components/ModelViewer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -66,7 +65,6 @@ const ExhibitCard = ({ item, t }) => (
             <CardContent className="space-y-2 p-4">
                 <div className="flex flex-wrap items-center gap-2">
                     {item.era && <Badge variant="secondary" className="rounded-full text-[10px]">{item.era}</Badge>}
-                    {item.model_url && <Badge variant="outline" className="rounded-full gap-1 text-[10px]"><Gem className="h-3 w-3" /> 3D</Badge>}
                 </div>
                 <h3 className="font-display text-lg font-semibold leading-snug group-hover:text-brand-saffron">{item.name}</h3>
                 {item.native_name && <p className="text-sm text-muted-foreground">{item.native_name}</p>}
@@ -163,9 +161,8 @@ export function MuseumItemDetail() {
             <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
                 <div className="space-y-3 lg:sticky lg:top-20 lg:self-start">
                     <div className="relative h-[42vh] min-h-72 overflow-hidden rounded-2xl border border-border/40 bg-stage sm:h-[55vh]">
-                        {item.model_url && !selectedImage ? <ModelViewer src={item.model_url} poster={heroImage} alt={`${item.name} 3D model`} /> : heroImage ? <img src={heroImage} alt={item.name} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-white/40"><Gem className="h-16 w-16" /></div>}
+                        {heroImage ? <img src={heroImage} alt={item.name} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-white/40"><Gem className="h-16 w-16" /></div>}
                     </div>
-                    {item.model_url && <Button type="button" variant="outline" size="sm" onClick={() => setSelectedImage("")} className="gap-2"><Gem className="h-4 w-4" />{t("museum_3d")}</Button>}
                     {photos.length > 1 && <div className="flex gap-2 overflow-x-auto pb-1">{photos.map((photo) => <button key={photo} type="button" onClick={() => setSelectedImage(photo)} aria-label={`${t("museum_show_photo")} ${photos.indexOf(photo) + 1}`} className={`h-16 w-20 shrink-0 overflow-hidden rounded-lg border-2 ${heroImage === photo ? "border-brand-saffron" : "border-transparent"}`}><img src={photo} alt="" className="h-full w-full object-cover" loading="lazy" /></button>)}</div>}
                     <p className="text-center text-xs text-muted-foreground">{t("museum_credit")}</p>
                 </div>
@@ -178,7 +175,6 @@ export function MuseumItemDetail() {
                     </header>
                     <section className="space-y-2"><h2 className="font-display text-xl font-semibold">{t("museum_about")}</h2><p className="text-sm leading-7 text-foreground/85">{item.description}</p></section>
                     {item.quick_facts?.length > 0 && <section className="rounded-2xl border border-border/70 bg-card p-4 sm:p-5"><h2 className="mb-3 flex items-center gap-2 font-display text-lg font-semibold"><Sparkles className="h-4 w-4 text-brand-saffron" />{t("museum_quick_facts")}</h2><ul className="space-y-2">{item.quick_facts.map((fact, index) => <li key={`${fact}-${index}`} className="flex gap-2 text-sm leading-relaxed text-muted-foreground"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-saffron" />{fact}</li>)}</ul></section>}
-                    {item.model_url && <p className="rounded-xl bg-secondary/50 p-3 text-xs leading-relaxed text-muted-foreground">{t("museum_3d_note")}</p>}
                     <Button asChild variant="outline" className="gap-2"><Link to={`/museum/${item.category}`}><ArrowLeft className="h-4 w-4" />{t("museum_back")}</Link></Button>
                 </article>
             </div>

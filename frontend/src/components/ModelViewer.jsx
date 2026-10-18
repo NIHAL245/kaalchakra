@@ -1,13 +1,11 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "@/components/ui/sonner";
-import { RotateCcw, Smartphone, AlertTriangle, Box } from "lucide-react";
+import { RotateCcw, AlertTriangle, Box } from "lucide-react";
 
 /**
- * Wrapper around Google's <model-viewer> web component for markerless WebAR.
- * Renders a .glb interactively and offers a "View in AR" action that launches
- * WebXR / Scene Viewer (Android) / Quick Look (iOS) where supported.
+ * Responsive, in-browser 3D viewer. It intentionally does not offer AR, so
+ * the same interaction is available on phones, tablets and desktops.
  */
 export const ModelViewer = ({ src, poster, alt }) => {
     const ref = useRef(null);
@@ -38,23 +36,6 @@ export const ModelViewer = ({ src, poster, alt }) => {
         }
     };
 
-    const activateAR = async () => {
-        const mv = ref.current;
-        if (mv && mv.canActivateAR) {
-            try {
-                await mv.activateAR();
-            } catch (e) {
-                toast.info("Could not open AR", {
-                description: "Your device may not support AR. Explore the 3D view instead.",
-                });
-            }
-        } else {
-            toast.info("AR not available on this device", {
-                description: "Open KaalChakra on a modern phone to place this model in your space. For now, explore in 3D.",
-            });
-        }
-    };
-
     return (
         <div className="relative h-full w-full" data-testid="model-viewer-stage">
             {React.createElement("model-viewer", {
@@ -71,9 +52,8 @@ export const ModelViewer = ({ src, poster, alt }) => {
                 "shadow-softness": "0.8",
                 exposure: "1",
                 "interaction-prompt": "none",
-                ar: "",
-                "ar-modes": "webxr scene-viewer quick-look",
-                "ar-scale": "auto",
+                loading: "eager",
+                reveal: "auto",
                 style: { width: "100%", height: "100%", backgroundColor: "transparent" },
             })}
 
@@ -85,11 +65,12 @@ export const ModelViewer = ({ src, poster, alt }) => {
                 </div>
             )}
 
-            {/* Error state */}
+            {/* Accessible photo fallback for devices without WebGL / 3D support */}
             {failed && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
-                    <AlertTriangle className="h-8 w-8 text-warning" />
-                    <p className="text-sm text-white/80">The 3D model could not be loaded.</p>
+                    {poster && <img src={poster} alt={alt || "Fort"} className="absolute inset-0 h-full w-full object-cover opacity-35" />}
+                    <AlertTriangle className="relative h-8 w-8 text-warning" />
+                    <p className="relative text-sm text-white/80">This device cannot render the interactive 3D model. The fort photo remains available.</p>
                     <Button
                         variant="secondary"
                         size="sm"
@@ -130,17 +111,6 @@ export const ModelViewer = ({ src, poster, alt }) => {
                     <RotateCcw className="h-5 w-5" />
                 </Button>
             </div>
-            <div className="absolute bottom-3 right-3">
-                <Button
-                    data-testid="ar-view-in-ar-button"
-                    onClick={activateAR}
-                    className="h-11 gap-2 rounded-full bg-brand-saffron px-4 text-white shadow-lg hover:bg-brand-saffron/90"
-                >
-                    <Smartphone className="h-4 w-4" />
-                    View in AR
-                </Button>
-            </div>
-
             {/* 3D badge */}
             <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur">
                 <Box className="h-3.5 w-3.5" />
