@@ -1,12 +1,10 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { RotateCcw, AlertTriangle, Box, Scan } from "lucide-react";
-import { toast } from "sonner";
+import { RotateCcw, AlertTriangle, Box } from "lucide-react";
 
 /**
- * Responsive 3D viewer with an AR entry point across devices. model-viewer
- * chooses WebXR, Scene Viewer or Quick Look when the device supports it.
+ * Responsive interactive 3D viewer with rotation and zoom controls.
  */
 export const ModelViewer = ({ src, poster, alt }) => {
     const ref = useRef(null);
@@ -20,18 +18,11 @@ export const ModelViewer = ({ src, poster, alt }) => {
         setFailed(false);
         const onLoad = () => setLoaded(true);
         const onError = () => setFailed(true);
-        const onARStatus = (event) => {
-            if (event.detail?.status === "failed") {
-                toast("AR couldn't start. Check that your browser and AR services are up to date.");
-            }
-        };
         mv.addEventListener("load", onLoad);
         mv.addEventListener("error", onError);
-        mv.addEventListener("ar-status", onARStatus);
         return () => {
             mv.removeEventListener("load", onLoad);
             mv.removeEventListener("error", onError);
-            mv.removeEventListener("ar-status", onARStatus);
         };
     }, [src]);
 
@@ -44,22 +35,6 @@ export const ModelViewer = ({ src, poster, alt }) => {
         }
     };
 
-    const viewInAR = () => {
-        const mv = ref.current;
-        if (!mv || !loaded) return;
-
-        if (!mv.canActivateAR) {
-            toast("AR isn't supported in this browser or on this device. You can still rotate and zoom the 3D model here.");
-            return;
-        }
-
-        try {
-            mv.activateAR();
-        } catch {
-            toast("AR couldn't start. Try opening this page in Safari on iPhone or Chrome on Android.");
-        }
-    };
-
     return (
         <div className="relative h-full w-full" data-testid="model-viewer-stage">
             {React.createElement("model-viewer", {
@@ -67,10 +42,6 @@ export const ModelViewer = ({ src, poster, alt }) => {
                 src,
                 poster,
                 alt: alt || "3D model",
-                ar: "",
-                "ar-modes": "webxr scene-viewer quick-look",
-                "ar-scale": "auto",
-                "xr-environment": "",
                 "camera-controls": "",
                 "auto-rotate": "",
                 "auto-rotate-delay": "1200",
@@ -137,19 +108,6 @@ export const ModelViewer = ({ src, poster, alt }) => {
                     className="h-11 w-11 rounded-full bg-white/10 text-white backdrop-blur hover:bg-white/20"
                 >
                     <RotateCcw className="h-5 w-5" />
-                </Button>
-            </div>
-            <div className="absolute bottom-3 right-3">
-                <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={viewInAR}
-                    disabled={!loaded || failed}
-                    className="h-11 rounded-full bg-white/10 px-4 text-white shadow-lg backdrop-blur hover:bg-white/20"
-                    aria-label="View this fort in augmented reality"
-                >
-                    <Scan className="h-4 w-4" />
-                    View in AR
                 </Button>
             </div>
             {/* 3D badge */}
