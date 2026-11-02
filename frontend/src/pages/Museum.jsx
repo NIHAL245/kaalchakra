@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ModelViewer } from "@/components/ModelViewer";
 
 const ICONS = {
     kings: Crown,
@@ -113,13 +114,14 @@ export function MuseumHome() {
 export function MuseumCategory() {
     const { categorySlug } = useParams();
     const { lang, t } = useLanguage();
-    const { data: categories = [], isLoading: categoriesLoading } = useMuseumCategories(lang);
+    const { data: categories = [], isLoading: categoriesLoading, isError: categoriesError } = useMuseumCategories(lang);
     const { data: items = [], isLoading, isError } = useQuery({
         queryKey: ["museum-items", categorySlug, lang],
         queryFn: () => getMuseumItems(categorySlug, lang),
     });
     const category = categories.find((entry) => entry.slug === categorySlug);
     if (isLoading || categoriesLoading) return <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[1, 2, 3].map((n) => <Skeleton key={n} className="h-80 rounded-2xl" />)}</div>;
+    if (categoriesError) return <div className="space-y-4"><MuseumError>{t("museum_error")}</MuseumError><Button asChild variant="outline"><Link to="/museum">{t("museum_back")}</Link></Button></div>;
     if (!category) return <div className="space-y-4"><MuseumError>{t("museum_category_not_found")}</MuseumError><Button asChild variant="outline"><Link to="/museum">{t("museum_back")}</Link></Button></div>;
     return (
         <div className="space-y-6" data-testid="museum-category-page">
@@ -138,24 +140,29 @@ export function MuseumItemDetail() {
     const { slug } = useParams();
 
     const MODEL_BY_SLUG = {
-    // Weapons
-    "Bhavani Talwar": "/models/bhavani-talwar.glb",
-    "Dhal(Shield)": "/models/dhal.glb",
-    "Bichwa (Dagger)": "/models/bichwa.glb",
-    "Wagh Nakh (Tiger Claws)": "/models/wagh-nakh.glb",
-    "Patta (Gauntlet Sword)": "/models/patta.glb",
-
-    // Coins
-    "Shivrai": "/models/shivrai-rupaya.glb",
-    "silver-coin": "/models/silver-coin.glb",
-
-    // Artifacts
-    "artifact-pot": "/models/rajmudra.glb",
-    "Jiretop": "/models/artifact-helmet.glb",
-   // "Jiretop (Helmet)": "/models/artifact.glb",//
-    //"Chilkhat (Armour)": "/models/chilkhat.glb",//
-};
-    const modelSrc = MODEL_BY_SLUG[slug]
+        // Kings
+        "shivaji-maharaj": "/models/museum/shivaji-maharaj.glb",
+        "sambhaji-maharaj": "/models/museum/sambhaji-maharaj.glb",
+        "rajaram-maharaj": "/models/museum/rajaram-maharaj.glb",
+        tararani: "/models/museum/tararani.glb",
+        "shahu-maharaj": "/models/museum/shahu-maharaj.glb",
+        // Weapons
+        "bhavani-talwar": "/models/museum/bhavani-talwar.glb",
+        "wagh-nakh": "/models/museum/wagh-nakh.glb",
+        dhal: "/models/museum/dhal.glb",
+        patta: "/models/museum/patta.glb",
+        bichwa: "/models/museum/bichwa.glb",
+        vita: "/models/museum/vita.glb",
+        // Coins
+        shivrai: "/models/museum/shivrai.glb",
+        hon: "/models/museum/hon.glb",
+        "shivrai-rupaya": "/models/museum/shivrai-rupaya.glb",
+        larin: "/models/museum/larin.glb",
+        // Artifacts
+        rajmudra: "/models/museum/rajmudra.glb",
+        jiretop: "/models/museum/jiretop.glb",
+        chilkhat: "/models/museum/chilkhat.glb",
+    };
     const navigate = useNavigate();
     const { lang, t } = useLanguage();
     const [selectedImage, setSelectedImage] = useState("");
@@ -172,7 +179,8 @@ export function MuseumItemDetail() {
     const category = categories.find((entry) => entry.slug === item?.category);
 
     if (isLoading) return <div className="grid gap-6 lg:grid-cols-2"><Skeleton className="h-[55vh] rounded-2xl" /><div className="space-y-4"><Skeleton className="h-10 w-2/3" /><Skeleton className="h-24 w-full" /><Skeleton className="h-40 w-full" /></div></div>;
-    if (isError || !item) return <div className="flex flex-col items-center gap-4 py-16 text-center"><p className="text-muted-foreground">{t("museum_not_found")}</p><Button onClick={() => navigate("/museum")}>{t("museum_back")}</Button></div>;
+    if (isError || !item) return <div className="flex flex-col items-center gap-4 py-16 text-center"><p className="text-muted-foreground">{isError ? t("museum_error") : t("museum_not_found")}</p><Button onClick={() => navigate("/museum")}>{t("museum_back")}</Button></div>;
+    const modelSrc = MODEL_BY_SLUG[slug] || item.model_url;
     const heroImage = selectedImage || photos[0] || item.image_url;
 
     return (
@@ -182,9 +190,9 @@ export function MuseumItemDetail() {
                 <div className="space-y-3 lg:sticky lg:top-20 lg:self-start">
                     <div className="relative h-[42vh] min-h-72 overflow-hidden rounded-2xl border border-border/40 bg-stage sm:h-[55vh]">
 
-        {(MODEL_BY_SLUG[slug] || item.model_url) && !selectedImage ? (
+        {modelSrc && !selectedImage ? (
     <ModelViewer
-        src={MODEL_BY_SLUG[slug] || item.model_url}
+        src={modelSrc}
         poster={heroImage}
         alt={`${item.name} 3D model`}
     />

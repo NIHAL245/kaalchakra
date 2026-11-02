@@ -92,7 +92,8 @@ export default function FortDetail() {
         else play(fort.narration_text, lang);
     };
 
-    const modelUrl = FORT_MODEL_BY_SLUG[slug] || fort.model_url;
+    // Prefer bundled models so a missing/stale database model_url cannot hide a fort model.
+    const modelUrl = FORT_MODEL_BY_SLUG[slug] || MODEL_BY_SLUG[slug] || fort.model_url;
 
     return (
         <div className="space-y-6">
