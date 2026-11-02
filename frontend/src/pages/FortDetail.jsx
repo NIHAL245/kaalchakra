@@ -29,6 +29,16 @@ import {
 
 export default function FortDetail() {
     const { slug } = useParams();
+
+    const MODEL_BY_SLUG = {
+        shivneri: "/models/shivneri.glb",
+        torna: "/models/torna.glb",
+        rajgad: "/models/rajgad.glb",
+        pratapgad: "/models/pratapgad.glb",
+        sinhagad: "/models/sinhagad.glb",
+        raigad: "/models/raigad.glb",
+    };
+
     const navigate = useNavigate();
     const { lang, t } = useLanguage();
     const { data: fort, isLoading, isError } = useQuery({
@@ -82,7 +92,9 @@ export default function FortDetail() {
                 {/* AR / 3D stage */}
                 <div className="lg:sticky lg:top-20 lg:self-start">
                     <div className="relative h-[55vh] overflow-hidden rounded-2xl border border-border/40 bg-stage shadow-[0_30px_80px_-40px_rgba(0,0,0,0.65)] sm:h-[60vh]">
-                        <ModelViewer src={fort.model_url} poster={fort.image_url} alt={`3D model of ${fort.name}`} />
+                        <ModelViewer src= {MODEL_BY_SLUG[slug] || fort.model_url}              
+                                     poster={fort.image_url}
+                                     alt={`3D model of ${fort.name}`} />
                     </div>
                     <p className="mt-2 text-center text-xs text-muted-foreground">{t("fort_model_placeholder")}</p>
                 </div>

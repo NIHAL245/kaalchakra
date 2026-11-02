@@ -138,6 +138,26 @@ export function MuseumCategory() {
 
 export function MuseumItemDetail() {
     const { slug } = useParams();
+
+    const MODEL_BY_SLUG = {
+    // Weapons
+    "Bhavani Talwar": "/models/bhavani-talwar.glb",
+    "Dhal(Shield)": "/models/dhal.glb",
+    "Bichwa (Dagger)": "/models/bichwa.glb",
+    "Wagh Nakh (Tiger Claws)": "/models/wagh-nakh.glb",
+    "Patta (Gauntlet Sword)": "/models/patta.glb",
+
+    // Coins
+    "Shivrai": "/models/shivrai-rupaya.glb",
+    "silver-coin": "/models/silver-coin.glb",
+
+    // Artifacts
+    "artifact-pot": "/models/rajmudra.glb",
+    "Jiretop": "/models/artifact-helmet.glb",
+   // "Jiretop (Helmet)": "/models/artifact.glb",//
+    //"Chilkhat (Armour)": "/models/chilkhat.glb",//
+};
+    const modelSrc = MODEL_BY_SLUG[slug]
     const navigate = useNavigate();
     const { lang, t } = useLanguage();
     const [selectedImage, setSelectedImage] = useState("");
@@ -163,7 +183,7 @@ export function MuseumItemDetail() {
             <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
                 <div className="space-y-3 lg:sticky lg:top-20 lg:self-start">
                     <div className="relative h-[42vh] min-h-72 overflow-hidden rounded-2xl border border-border/40 bg-stage sm:h-[55vh]">
-                        {item.model_url && !selectedImage ? <ModelViewer src={item.model_url} poster={heroImage} alt={`${item.name} 3D model`} /> : heroImage ? <img src={heroImage} alt={item.name} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-white/40"><Gem className="h-16 w-16" /></div>}
+                        {(MODEL_BY_SLUG[slug] || item.model_url) && !selectedImage ? <ModelViewer src= {MODEL_BY_SLUG[slug] || item.model_url} poster={heroImage} alt={`${item.name} 3D model`} /> : heroImage ? <img src={heroImage} alt={item.name} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-white/40"><Gem className="h-16 w-16" /></div>}
                     </div>
                     {item.model_url && <Button type="button" variant="outline" size="sm" onClick={() => setSelectedImage("")} className="gap-2"><Gem className="h-4 w-4" />{t("museum_3d")}</Button>}
                     {photos.length > 1 && <div className="flex gap-2 overflow-x-auto pb-1">{photos.map((photo) => <button key={photo} type="button" onClick={() => setSelectedImage(photo)} aria-label={`${t("museum_show_photo")} ${photos.indexOf(photo) + 1}`} className={`h-16 w-20 shrink-0 overflow-hidden rounded-lg border-2 ${heroImage === photo ? "border-brand-saffron" : "border-transparent"}`}><img src={photo} alt="" className="h-full w-full object-cover" loading="lazy" /></button>)}</div>}

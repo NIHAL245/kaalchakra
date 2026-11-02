@@ -16,7 +16,7 @@ from typing import List, Optional, Dict
 import uuid
 from datetime import datetime, timezone, timedelta
 
-from seed_data import FORTS, QUIZ_QUESTIONS
+from seed_data import FORTS, QUIZ_QUESTIONS, TIMELINE_QUIZ_QUESTIONS
 from museum_data import ITEMS as MUSEUM_ITEMS, CATEGORIES as MUSEUM_CATEGORIES
 
 ROOT_DIR = Path(__file__).parent
@@ -65,8 +65,8 @@ MUSEUM_CAT_SLUGS = {c["slug"] for c in MUSEUM_CATEGORIES}
 # Representative CC0 fort/castle 3D models (Quaternius / get3dmodels, public domain).
 # Swap with real fort .glb scans when available.
 MODEL_BY_SLUG = {
-    "shivneri": "/models/fort-keep.glb",
-    "torna": "/models/fort-stone2.glb",
+    "shivneri": "/models/shivneri.glb",
+    "torna": "/models/torna.glb",
     "rajgad": "/models/fort-castle.glb",
     "pratapgad": "/models/fort-fortress.glb",
     "sinhagad": "/models/fort-stone2.glb",
@@ -478,6 +478,28 @@ async def seed_database(force: bool = False):
         logger.info(f"Seeded {len(fort_docs)} forts, {len(quiz_docs)} quiz questions (v{SEED_VERSION})")
 
 
+async def seed_timeline_quiz_questions():
+    """Add the timeline quiz batch without resetting existing quiz data."""
+    docs = []
+    for i, question in enumerate(TIMELINE_QUIZ_QUESTIONS, start=1):
+        question_id = f"q-timeline-{i:02d}"
+        exists = await db.quiz_questions.find_one({"id": question_id}, {"_id": 1})
+        if exists:
+            continue
+        docs.append({
+            "id": question_id,
+            "fort_slug": None,
+            "prompt": question["prompt"],
+            "options": question["options"],
+            "correct_index": question["correct_index"],
+            "explanation": question["explanation"],
+            "translations": {},
+        })
+    if docs:
+        await db.quiz_questions.insert_many(docs)
+        logger.info("Added %s timeline quiz questions", len(docs))
+
+
 async def seed_museum(force: bool = False):
     """Seed museum content; apply later seed versions without replacing admin edits."""
     meta = await db.meta.find_one({"_id": "museum_seed"})
@@ -780,7 +802,7 @@ async def chat_stream(req: ChatRequest):
     if not EMERGENT_LLM_KEY:
         raise HTTPException(status_code=500, detail="LLM key not configured")
 
-    from emergentintegrations.llm.chat import UserMessage, TextDelta, StreamDone
+    from emergentintegrations.llm.chat import UserMessage
 
     lang = _norm_lang(req.lang)
     now = datetime.now(timezone.utc)
@@ -793,17 +815,15 @@ async def chat_stream(req: ChatRequest):
     })
 
     async def event_generator():
-        collected = []
         try:
             chat = await _get_or_create_chat(req.session_id, req.fort_slug, lang)
-            async for event in chat.stream_message(UserMessage(text=req.message.strip())):
-                if isinstance(event, TextDelta):
-                    collected.append(event.content)
-                    yield f"data: {json.dumps({'delta': event.content})}\n\n"
-                elif isinstance(event, StreamDone):
-                    break
-            full = "".join(collected).strip()
+            response_text = await chat.send_message(
+                UserMessage(text=req.message.strip())
+            )
+            full = (response_text or "").strip()
+
             if full:
+                yield f"data: {json.dumps({'delta': full})}\n\n"
                 await db.chat_messages.insert_one({
                     "id": str(uuid.uuid4()),
                     "session_id": req.session_id,
@@ -811,9 +831,10 @@ async def chat_stream(req: ChatRequest):
                     "content": full,
                     "created_at": datetime.now(timezone.utc).isoformat(),
                 })
+
             yield f"data: {json.dumps({'done': True})}\n\n"
         except Exception as e:
-            logger.exception("Chat streaming error")
+            logger.exception("Chat error")
             yield f"data: {json.dumps({'error': str(e)})}\n\n"
 
     return StreamingResponse(
@@ -1100,6 +1121,7 @@ logger = logging.getLogger(__name__)
 async def startup_seed():
     try:
         await seed_database()
+        await seed_timeline_quiz_questions()
         await seed_museum()
         await ensure_admin()
     except Exception:

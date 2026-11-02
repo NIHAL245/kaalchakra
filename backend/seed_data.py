@@ -273,3 +273,24 @@ QUIZ_QUESTIONS = [
     {"fort_slug": None, "prompt": "Which mountain range is home to most of Shivaji's forts?", "options": ["Himalayas", "Aravalli", "Sahyadri (Western Ghats)", "Vindhya"], "correct_index": 2, "explanation": "Most Maratha hill forts lie in the Sahyadri range, the Western Ghats."},
     {"fort_slug": None, "prompt": "In which year did Chhatrapati Shivaji Maharaj pass away?", "options": ["1674", "1680", "1707", "1650"], "correct_index": 1, "explanation": "Shivaji Maharaj passed away at Raigad in 1680."},
 ]
+
+
+# Added as a separate, non-destructive batch so existing quiz data and admin
+# edits are preserved when timeline questions are introduced.
+TIMELINE_QUIZ_QUESTIONS = [
+    {"prompt": "At which fort was Shivaji Maharaj born?", "options": ["Raigad", "Shivneri", "Pratapgad", "Panhala"], "correct_index": 1, "explanation": "Shivaji Maharaj was born at Shivneri Fort, near Junnar."},
+    {"prompt": "Which fort is commonly described as Shivaji Maharaj's first major fort capture?", "options": ["Torna", "Raigad", "Sinhagad", "Purandar"], "correct_index": 0, "explanation": "Torna was captured around 1645–46 and became an early base for Swarajya."},
+    {"prompt": "Which valley did Shivaji Maharaj bring under his control in 1656?", "options": ["Kashmir", "Javli", "Kaveri", "Narmada"], "correct_index": 1, "explanation": "Control of the Javli valley strengthened his position in the Sahyadri region."},
+    {"prompt": "Who was the Bijapur commander defeated in the events at Pratapgad in 1659?", "options": ["Shaista Khan", "Afzal Khan", "Diler Khan", "Jai Singh"], "correct_index": 1, "explanation": "Afzal Khan was killed in his encounter with Shivaji near Pratapgad; Maratha forces then defeated his army."},
+    {"prompt": "Which pass is associated with Baji Prabhu Deshpande's rear-guard stand during Shivaji's escape from Panhala?", "options": ["Pavan Khind", "Bhor Ghat", "Nane Ghat", "Thal Ghat"], "correct_index": 0, "explanation": "Baji Prabhu and his men held Pavan Khind while Shivaji travelled toward Vishalgad."},
+    {"prompt": "Where did Shivaji Maharaj lead a surprise night raid against Shaista Khan in 1663?", "options": ["Lal Mahal, Pune", "Agra Fort", "Red Fort, Delhi", "Surat port"], "correct_index": 0, "explanation": "The raid took place at Lal Mahal in Pune, where Shaista Khan was staying."},
+    {"prompt": "Which wealthy Mughal port city did Maratha forces raid in 1664?", "options": ["Calicut", "Surat", "Chennai", "Goa"], "correct_index": 1, "explanation": "Surat was raided by Maratha forces in 1664 and again in 1670."},
+    {"prompt": "The 1665 Treaty of Purandar was signed after a campaign led by which Mughal commander?", "options": ["Mirza Raja Jai Singh", "Shaista Khan", "Afzal Khan", "Aurangzeb"], "correct_index": 0, "explanation": "Mirza Raja Jai Singh led the Mughal campaign that resulted in the Treaty of Purandar."},
+    {"prompt": "Why was Shivaji Maharaj kept under guard during his 1666 visit to Agra?", "options": ["After a dispute over court protocol", "Because he had lost a battle", "To arrange his coronation", "To negotiate the Treaty of Purandar"], "correct_index": 0, "explanation": "After a dispute over his treatment at Aurangzeb's court, Shivaji was placed under guard and later escaped."},
+    {"prompt": "Which fort did Tanaji Malusare help recapture in 1670?", "options": ["Sinhagad (Kondhana)", "Shivneri", "Torna", "Murud-Janjira"], "correct_index": 0, "explanation": "Tanaji Malusare led the assault to recapture Kondhana, later known as Sinhagad."},
+    {"prompt": "On what date was Shivaji Maharaj crowned Chhatrapati at Raigad?", "options": ["6 June 1674", "10 November 1659", "19 February 1630", "3 April 1680"], "correct_index": 0, "explanation": "The first coronation ceremony at Raigad took place on 6 June 1674."},
+    {"prompt": "Which title did Shivaji Maharaj assume at his coronation?", "options": ["Chhatrapati", "Peshwa", "Nawab", "Subedar"], "correct_index": 0, "explanation": "At his coronation, Shivaji assumed the title Chhatrapati, signifying sovereign kingship."},
+    {"prompt": "Which region was the focus of Shivaji Maharaj's major southern expedition in the late 1670s?", "options": ["Carnatic", "Punjab", "Bengal", "Kashmir"], "correct_index": 0, "explanation": "The southern campaign extended Maratha influence into the Carnatic region."},
+    {"prompt": "Where did Shivaji Maharaj die in 1680?", "options": ["Raigad", "Shivneri", "Agra", "Surat"], "correct_index": 0, "explanation": "Shivaji Maharaj died at Raigad on 3 April 1680."},
+    {"prompt": "Who succeeded Shivaji Maharaj after his death?", "options": ["Sambhaji", "Rajaram", "Shahaji", "Jai Singh"], "correct_index": 0, "explanation": "His son Sambhaji succeeded him as ruler."},
+]

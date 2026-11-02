@@ -6,7 +6,9 @@ import { FortCard } from "@/components/FortCard";
 import { FortMap } from "@/components/FortMap";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Landmark, RefreshCw, MapPin } from "lucide-react";
+import { Landmark, RefreshCw, MapPin, Clock } from "lucide-react";
+import LifeTimeline from "@/pages/LifeTimeline";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Explore() {
     const { lang, t } = useLanguage();
@@ -27,6 +29,17 @@ export default function Explore() {
                 </div>
             </div>
 
+            <Tabs defaultValue="forts" className="w-full">
+                <TabsList className="grid h-auto w-full max-w-sm grid-cols-2 rounded-xl border border-border/70 bg-secondary/60 p-1">
+                    <TabsTrigger value="forts" className="gap-2 rounded-lg py-2.5" data-testid="explore-forts-tab">
+                        <Landmark className="h-4 w-4" />Forts
+                    </TabsTrigger>
+                    <TabsTrigger value="timeline" className="gap-2 rounded-lg py-2.5" data-testid="explore-timeline-tab">
+                        <Clock className="h-4 w-4" />Timeline
+                    </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="forts" className="mt-6 space-y-8">
             {isError && (
                 <div className="flex flex-col items-center gap-3 rounded-xl border border-border/60 bg-card p-10 text-center">
                     <p className="text-sm text-muted-foreground">{t("explore_error")}</p>
@@ -65,6 +78,13 @@ export default function Explore() {
                     {t("explore_empty")}
                 </div>
             )}
+
+                </TabsContent>
+
+                <TabsContent value="timeline" className="mt-6">
+                    <LifeTimeline />
+                </TabsContent>
+            </Tabs>
         </div>
     );
 }
