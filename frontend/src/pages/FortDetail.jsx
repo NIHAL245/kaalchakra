@@ -27,6 +27,19 @@ import {
     CheckCircle2,
 } from "lucide-react";
 
+const FORT_MODEL_BY_SLUG = {
+    lohagad: "/models/forts/lohagad.glb",
+    "murud-janjira": "/models/forts/murud-janjira.glb",
+    panhala: "/models/forts/panhala.glb",
+    pratapgad: "/models/forts/pratapgad.glb",
+    purandar: "/models/forts/purandar.glb",
+    raigad: "/models/forts/raigad.glb",
+    rajgad: "/models/forts/rajgad.glb",
+    shivneri: "/models/forts/shivneri.glb",
+    sindhudurg: "/models/forts/sindhudurg.glb",
+    torna: "/models/forts/torna.glb",
+};
+
 export default function FortDetail() {
     const { slug } = useParams();
 
@@ -79,6 +92,8 @@ export default function FortDetail() {
         else play(fort.narration_text, lang);
     };
 
+    const modelUrl = FORT_MODEL_BY_SLUG[slug] || fort.model_url;
+
     return (
         <div className="space-y-6">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -89,13 +104,24 @@ export default function FortDetail() {
             </div>
 
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
-                {/* AR / 3D stage */}
+                {/* Responsive 3D stage */}
                 <div className="lg:sticky lg:top-20 lg:self-start">
-                    <div className="relative h-[55vh] overflow-hidden rounded-2xl border border-border/40 bg-stage shadow-[0_30px_80px_-40px_rgba(0,0,0,0.65)] sm:h-[60vh]">
-                        <ModelViewer src= {MODEL_BY_SLUG[slug] || fort.model_url}              
-                                     poster={fort.image_url}
-                                     alt={`3D model of ${fort.name}`} />
-                    </div>
+
+                   <div className="relative h-[48vh] min-h-72 overflow-hidden rounded-2xl border border-border/40 bg-stage shadow-[0_30px_80px_-40px_rgba(0,0,0,0.65)] sm:h-[55vh] lg:h-[60vh]">
+    {modelUrl ? (
+        <ModelViewer
+            src={modelUrl}
+            poster={fort.image_url}
+            alt={`3D model of ${fort.name}`}
+        />
+    ) : (
+        <img
+            src={fort.image_url}
+            alt={fort.name}
+            className="h-full w-full object-cover"
+        />
+    )}
+</div>
                     <p className="mt-2 text-center text-xs text-muted-foreground">{t("fort_model_placeholder")}</p>
                 </div>
 
