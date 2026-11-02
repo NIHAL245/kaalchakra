@@ -1,4 +1,5 @@
 import axios from "axios";
+import museumFallback from "@/data/museumFallback.json";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
@@ -20,12 +21,61 @@ export const getChatHistory = async (sessionId) =>
     (await client.get(`/chat/${sessionId}/history`)).data;
 
 // --- Museum / Heritage Collection ---
-export const getMuseumCategories = async (lang = "en") =>
-    (await client.get("/museum/categories", { params: { lang } })).data;
-export const getMuseumItems = async (category, lang = "en") =>
-    (await client.get("/museum/items", { params: { category, lang } })).data;
-export const getMuseumItem = async (slug, lang = "en") =>
-    (await client.get(`/museum/items/${slug}`, { params: { lang } })).data;
+const localizeMuseumEntry = (entry, lang) => ({
+    ...entry,
+    ...(entry.translations?.[lang] || {}),
+});
+
+const getFallbackMuseumCategories = (lang) => museumFallback.categories.map((category) => {
+    const items = museumFallback.items
+        .filter((item) => item.category === category.slug)
+        .sort((a, b) => a.order - b.order);
+    const localized = localizeMuseumEntry(category, lang);
+    return {
+        slug: category.slug,
+        name: localized.name,
+        native_name: localized.native_name || category.native_name || "",
+        tagline: localized.tagline || category.tagline || "",
+        icon: category.icon,
+        count: items.length,
+        cover_image: items.find((item) => item.image_url)?.image_url || "",
+    };
+});
+
+const getFallbackMuseumItems = (category, lang) => museumFallback.items
+    .filter((item) => !category || item.category === category)
+    .sort((a, b) => a.category.localeCompare(b.category) || a.order - b.order)
+    .map((item) => localizeMuseumEntry(item, lang));
+
+export const getMuseumCategories = async (lang = "en") => {
+    try {
+        const { data } = await client.get("/museum/categories", { params: { lang } });
+        if (Array.isArray(data) && data.length) return data;
+    } catch (error) {
+        // The bundled collection keeps the Museum usable when the API is offline.
+    }
+    return getFallbackMuseumCategories(lang);
+};
+
+export const getMuseumItems = async (category, lang = "en") => {
+    try {
+        const { data } = await client.get("/museum/items", { params: { category, lang } });
+        if (Array.isArray(data) && data.length) return data;
+    } catch (error) {
+        // Fall through to the bundled collection when the API is offline.
+    }
+    return getFallbackMuseumItems(category, lang);
+};
+
+export const getMuseumItem = async (slug, lang = "en") => {
+    try {
+        return (await client.get(`/museum/items/${slug}`, { params: { lang } })).data;
+    } catch (error) {
+        const item = museumFallback.items.find((entry) => entry.slug === slug);
+        if (!item) throw error;
+        return localizeMuseumEntry(item, lang);
+    }
+};
 
 /**
  * Stream a chat response from the backend using fetch + ReadableStream.

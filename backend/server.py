@@ -17,7 +17,7 @@ import uuid
 from datetime import datetime, timezone, timedelta
 
 from seed_data import FORTS, QUIZ_QUESTIONS, TIMELINE_QUIZ_QUESTIONS
-from museum_data import ITEMS as MUSEUM_ITEMS, CATEGORIES as MUSEUM_CATEGORIES
+from museum_data import ITEMS as MUSEUM_ITEMS, CATEGORIES as MUSEUM_CATEGORIES, SUPPLIED_MODEL_URLS
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -59,7 +59,7 @@ FORT_COORDS = _load_json("fort_coords.json", {})
 MUSEUM_IMAGES = _load_json("museum_images.json", {})
 MUSEUM_TX = _load_json("museum_translations.json", {"items": {}, "categories": {}})
 # Bump to force a re-seed of museum content (does not touch forts/quizzes).
-MUSEUM_SEED_VERSION = 2
+MUSEUM_SEED_VERSION = 3
 MUSEUM_CAT_SLUGS = {c["slug"] for c in MUSEUM_CATEGORIES}
 
 # Supplied fort-specific 3D models.
@@ -547,7 +547,7 @@ async def seed_museum(force: bool = False):
             "quick_facts": it.get("quick_facts", []),
             "images": imgs,
             "image_url": imgs[0] if imgs else "",
-            "model_url": it.get("model_url") or f"/models/museum/{slug}.glb",
+            "model_url": SUPPLIED_MODEL_URLS.get(slug) or it.get("model_url") or f"/models/museum/{slug}.glb",
             "order": n,
             "translations": (MUSEUM_TX.get("items", {}) or {}).get(slug, {}),
         })
@@ -563,6 +563,12 @@ async def seed_museum(force: bool = False):
             await db.museum_items.insert_many(item_docs)
     else:
         for item in item_docs:
+            if item["slug"] in SUPPLIED_MODEL_URLS:
+                await db.museum_items.update_one(
+                    {"slug": item["slug"]},
+                    {"$set": {"model_url": item["model_url"]}},
+                )
+                continue
             if item["model_url"]:
                 await db.museum_items.update_one(
                     {

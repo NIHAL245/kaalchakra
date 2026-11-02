@@ -453,3 +453,22 @@ ITEMS = [
         "wiki": "Maratha empire flag saffron",
     },
 ]
+
+# Locally bundled models supplied for the matching museum entries.
+SUPPLIED_MODEL_URLS = {
+    "sambhaji-maharaj": "/models/museum/sambhaji-maharaj.glb",
+    "tararani": "/models/museum/tararani.glb",
+    "shahu-maharaj": "/models/museum/shahu-maharaj.glb",
+    "bhavani-talwar": "/models/museum/bhavani-talwar.glb",
+    "wagh-nakh": "/models/museum/wagh-nakh.glb",
+    "dhal": "/models/museum/dhal.glb",
+    "patta": "/models/museum/patta.glb",
+    "bichwa": "/models/museum/bichwa.glb",
+    "vita": "/models/museum/vita.glb",
+    "shivrai": "/models/museum/shivrai.glb",
+    "shivrai-rupaya": "/models/museum/shivrai-rupaya.glb",
+    "larin": "/models/museum/larin.glb",
+    "rajmudra": "/models/museum/rajmudra.glb",
+    "jiretop": "/models/museum/jiretop.glb",
+    "chilkhat": "/models/museum/chilkhat.glb",
+}
