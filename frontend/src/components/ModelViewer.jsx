@@ -46,6 +46,22 @@ export const ModelViewer = ({ src, poster, alt }) => {
 
     const openAR = () => {
         const mv = ref.current;
+        const isAndroid = /Android/i.test(window.navigator.userAgent);
+
+        // Hand Android directly to Scene Viewer. Its explicit intent can still
+        // show the model in 3D when AR services are missing or out of date.
+        if (isAndroid && src) {
+            const modelUrl = new URL(src, window.location.href).href;
+            const fallbackUrl = encodeURIComponent(window.location.href);
+            const intentUrl = `intent://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(modelUrl)}&mode=ar_preferred#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${fallbackUrl};end`;
+            setArFailed(false);
+            window.location.href = intentUrl;
+            window.setTimeout(() => {
+                if (document.visibilityState === "visible") setArFailed(true);
+            }, 1800);
+            return;
+        }
+
         if (!mv?.canActivateAR) {
             setArFailed(true);
             return;
